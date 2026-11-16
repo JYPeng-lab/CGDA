@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite this software release and the accompanying article."
+title: "CGDA: centroid-guided data augmentation for domain adaptation in electronic-nose drift compensation"
+abstract: >-
+  Reference implementation of centroid-guided data augmentation (CGDA) for
+  electronic-nose drift compensation. Class-level target centroids estimated from
+  a small labelled calibration set anchor the interpolation of source samples; the
+  same frozen feature extractor supports closed-set recognition, unknown-gas
+  rejection and environmental event detection through a cosine prototype distance.
+authors:
+  - family-names: "Peng"
+    given-names: "Jingyi"
+type: software
+repository-code: "https://github.com/JYPeng-lab/CGDA"
+license: MIT
+year: 2026
+version: "1.0.0"
+keywords:
+  - electronic nose
+  - sensor drift
+  - domain adaptation
+  - data augmentation
+  - open-set recognition
+  - calibration

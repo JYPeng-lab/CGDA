@@ -1,0 +1,35 @@
+dataset,direction,model,method,macro_f1,accuracy,ece,params,params_M,macs,flops,flops_M,peak_rss_MB,inference_ms,error
+MENS,master_slave1,Sniff ConvNet,base,0.222512,0.290389,0.368049,8614.000000,0.008614,40128.000000,80256.000000,0.080256,437.070000,0.006471,
+MENS,master_slave1,Sniff ResNet,base,0.224512,0.302658,0.569379,26246.000000,0.026246,144768.000000,289536.000000,0.289536,439.930000,0.015587,
+MENS,master_slave1,LSTM,base,0.230212,0.321063,0.392689,17542.000000,0.017542,106368.000000,212736.000000,0.212736,442.120000,0.007123,
+MENS,master_slave1,LeNet-5,base,0.397954,0.466258,0.332133,13246.000000,0.013246,14124.000000,28248.000000,0.028248,435.570000,0.004077,
+MENS,master_slave2,Sniff ConvNet,base,0.357482,0.456897,0.131307,8614.000000,0.008614,40128.000000,80256.000000,0.080256,430.890000,0.006834,
+MENS,master_slave2,Sniff ResNet,base,0.358851,0.448276,0.330426,26246.000000,0.026246,144768.000000,289536.000000,0.289536,439.980000,0.014851,
+MENS,master_slave2,LSTM,base,0.333605,0.403017,0.236741,17542.000000,0.017542,106368.000000,212736.000000,0.212736,442.510000,0.006979,
+MENS,master_slave2,LeNet-5,base,0.239845,0.303879,0.514551,13246.000000,0.013246,14124.000000,28248.000000,0.028248,435.700000,0.003561,
+MENS,master_slave1,CGDA,base,0.311400,0.380400,0.495300,26054.000000,0.026100,25728.000000,51456.000000,0.051456,416.110000,0.002600,
+MENS,master_slave1,CGDA,cal_sup,0.857600,0.860900,0.050800,26054.000000,0.026100,25728.000000,51456.000000,0.051456,416.690000,0.001200,
+MENS,master_slave1,CGDA,mixup_std,0.376100,0.439700,0.224100,26054.000000,0.026100,25728.000000,51456.000000,0.051456,416.200000,0.001100,
+MENS,master_slave1,CGDA,cg_sup,0.856700,0.856900,0.062900,26054.000000,0.026100,25728.000000,51456.000000,0.051456,416.230000,0.001200,
+MENS,master_slave1,CGDA,cg_mix,0.686900,0.691200,0.199000,26054.000000,0.026100,25728.000000,51456.000000,0.051456,415.930000,0.001100,
+MENS,master_slave1,CGDA,cg_shuffle,0.551400,0.548100,0.191100,26054.000000,0.026100,25728.000000,51456.000000,0.051456,417.210000,0.001200,
+MENS,master_slave2,CGDA,base,0.257800,0.306000,0.583400,26054.000000,0.026100,25728.000000,51456.000000,0.051456,415.620000,0.001400,
+MENS,master_slave2,CGDA,cal_sup,0.748100,0.767200,0.132300,26054.000000,0.026100,25728.000000,51456.000000,0.051456,415.170000,0.001200,
+MENS,master_slave2,CGDA,mixup_std,0.326500,0.394400,0.343300,26054.000000,0.026100,25728.000000,51456.000000,0.051456,415.500000,0.001200,
+MENS,master_slave2,CGDA,cg_sup,0.799700,0.803900,0.106400,26054.000000,0.026100,25728.000000,51456.000000,0.051456,416.990000,0.001300,
+MENS,master_slave2,CGDA,cg_mix,0.666600,0.685300,0.219300,26054.000000,0.026100,25728.000000,51456.000000,0.051456,416.560000,0.001200,
+MENS,master_slave2,CGDA,cg_shuffle,0.487700,0.500000,0.208900,26054.000000,0.026100,25728.000000,51456.000000,0.051456,416.120000,0.001700,
+MENS,master_slave1,ResNet34,base,,,,7221318.000000,7.221318,7316032.000000,14632064.000000,14.632064,,5.566547,params/macs/flops measured on 6-dim input; performance not trained (see note)
+MENS,master_slave2,ResNet34,base,,,,7221318.000000,7.221318,7316032.000000,14632064.000000,14.632064,,5.566547,params/macs/flops measured on 6-dim input; performance not trained (see note)
+MENS,master_slave1,VGG13,base,,,,,,,,,,,"structural: 3x MaxPool1d reduces 6->3->1->0, max_pool1d output size 0"
+MENS,master_slave1,VGG19,base,,,,,,,,,,,"structural: 3x MaxPool1d reduces 6->3->1->0, max_pool1d output size 0"
+MENS,master_slave1,AlexNet,base,,,,,,,,,,,structural: first conv kernel 11 > input length 6
+MENS,master_slave1,GoogLeNet,base,,,,,,,,,,,structural: max_pool1d output size 0 on 6-dim input
+MENS,master_slave1,GasNet,base,,,,,,,,,,,structural: MaxPool1d reduces 6->3->1->0 (needs >=32-dim input)
+MENS,master_slave1,Sniff Multinose,base,,,,,,,,,,,structural: n_groups=4 -> seg=1 -> squeeze(1) collapses channel dim
+MENS,master_slave2,VGG13,base,,,,,,,,,,,"structural: 3x MaxPool1d reduces 6->3->1->0, max_pool1d output size 0"
+MENS,master_slave2,VGG19,base,,,,,,,,,,,"structural: 3x MaxPool1d reduces 6->3->1->0, max_pool1d output size 0"
+MENS,master_slave2,AlexNet,base,,,,,,,,,,,structural: first conv kernel 11 > input length 6
+MENS,master_slave2,GoogLeNet,base,,,,,,,,,,,structural: max_pool1d output size 0 on 6-dim input
+MENS,master_slave2,GasNet,base,,,,,,,,,,,structural: MaxPool1d reduces 6->3->1->0 (needs >=32-dim input)
+MENS,master_slave2,Sniff Multinose,base,,,,,,,,,,,structural: n_groups=4 -> seg=1 -> squeeze(1) collapses channel dim
