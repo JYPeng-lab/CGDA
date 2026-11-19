@@ -123,16 +123,18 @@ def train_network(xs,ys,xc,yc,mode,seed,classes,epochs=50,steps=None,small=False
         original={1:1.,2:1.,3:1.,4:1.5,5:1.,6:2.}
         weights=np.array([original.get(int(c),1.) for c in classes],np.float32)
     wt=torch.from_numpy(weights)
-    use_cal=mode in ('cal_sup','cg_sup','cg_shuffle')
+    use_cal=mode in ('cal_sup','cg_sup','cg_shuffle','cg_anneal')
     xb=np.concatenate([xs,xc]) if use_cal and len(xc) else xs
     yb=np.r_[ys,yc] if use_cal and len(xc) else ys
     centers={c:xc[yc==c].mean(0) for c in np.unique(yc)}
     if mode=='cg_shuffle' and len(centers)>1:
         keys=sorted(centers); centers={c:centers[keys[(i+1)%len(keys)]] for i,c in enumerate(keys)}
     batch=128; steps=steps or math.ceil((len(xs)+len(xc)+len(classes)*60)/batch)
+    anneal_from=int(epochs*0.6)
     for epoch in range(epochs):
         xa,ya=xb,yb
-        if mode in ('cg_mix','cg_sup','cg_shuffle') and centers:
+        do_aug=mode in ('cg_mix','cg_sup','cg_shuffle') or (mode=='cg_anneal' and epoch<anneal_from)
+        if do_aug and centers:
             xx=[]; yy=[]
             for c,center in centers.items():
                 count=40 if small else 60

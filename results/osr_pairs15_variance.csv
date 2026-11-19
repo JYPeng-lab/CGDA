@@ -1,0 +1,13 @@
+﻿metric,source,df,MS,sigma2,pct
+auroc,unknown_pair,14,4.3449,0.015,36.1864
+auroc,method,4,7.1313,0.0087,21.0341
+auroc,pair_x_method,56,0.5989,0.0119,28.6419
+auroc,residual,3675,0.0059,0.0059,14.1377
+oscr,unknown_pair,14,4.9834,0.0173,36.0853
+oscr,method,4,9.9318,0.0124,25.7655
+oscr,pair_x_method,56,0.6504,0.0129,26.858
+oscr,residual,3675,0.0054,0.0054,11.2913
+known_accuracy,unknown_pair,14,0.4852,0.0014,20.3013
+known_accuracy,method,4,1.9039,0.0024,33.9455
+known_accuracy,pair_x_method,56,0.1319,0.0026,37.7542
+known_accuracy,residual,3675,0.0006,0.0006,7.999

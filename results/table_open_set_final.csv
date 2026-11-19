@@ -1,0 +1,4 @@
+﻿Method,AUROC_mean,AUROC_sd,OSCR_mean,OSCR_sd,KnownAcc_mean,KnownAcc_sd,n_units
+Source only,0.7239,0.2025,0.6741,0.2207,0.8999,0.0908,750
+Cal-Sup,0.8367,0.1025,0.8311,0.1034,0.9865,0.0118,750
+CGDA (cg_sup),0.8296,0.1022,0.8258,0.1025,0.9883,0.0103,750

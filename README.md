@@ -71,8 +71,9 @@ python experiments/cross_domain/run_forward_mixup.py
 python experiments/cross_domain/run_feature_metrics.py
 
 # 4. open-set rejection (Section 4.5)
-python experiments/open_set/run_osr_cosine.py
-python experiments/open_set/run_osr_cosine_multi.py --method cg_sup
+python experiments/open_set/run_osr_pairs15.py            # 15 unknown-class pairs, k=2
+python experiments/open_set/export_fig6_panels.py --pairs 2-3,1-2,3-5
+python tables/aggregate_fig6_panels.py                    # panel_44* behind Fig. 6
 
 # 5. environmental event detection (Section 4.6)
 python experiments/event_detection/run_aq_cosine.py
@@ -87,7 +88,9 @@ python overhead/bench_lit_time.py
 # 7. aggregate run outputs into paper tables
 python tables/aggregate_single_source.py
 python tables/aggregate_protocol_overview.py
-python tables/aggregate_osr_cosine.py
+python tables/summarize_osr_pairs15.py
+python tables/table_44_open_set_all_pairs.py
+python tables/export_open_set_results.py
 python tables/aggregate_event_panels.py
 python tables/build_event_summary.py
 python tables/merge_final_overhead.py

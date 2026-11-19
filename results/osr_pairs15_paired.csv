@@ -1,0 +1,2 @@
+﻿n_paired_units,mean_diff_oscr,ci95_low,ci95_high,paired_t_p,wilcoxon_p,wins,losses,ties
+750,-0.00549,-0.00995,-0.00102,0.016239,0.0,281,469,0

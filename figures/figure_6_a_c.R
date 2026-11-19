@@ -1,28 +1,9 @@
-
-
-# --- repository root resolution (Rscript or RStudio) ---
-if (!exists("REPO")) {
-  .ofile <- NULL
-  .args <- commandArgs(trailingOnly = FALSE)
-  .hit <- grep("^--file=", .args, value = TRUE)
-  if (length(.hit)) .ofile <- sub("^--file=", "", .hit[1])
-  if (is.null(.ofile)) {
-    .ofile <- tryCatch(normalizePath(sys.frame(1)$ofile), error = function(e) "")
-    if (!is.null(.ofile) && !nzchar(.ofile)) .ofile <- NULL
-  }
-  if (!is.null(.ofile)) {
-    REPO <- dirname(dirname(normalizePath(.ofile)))
-  } else {
-    REPO <- getwd()
-    message("REPO defaulted to the working directory; set REPO manually if needed.")
-  }
-}
-
 library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-path <- paste0(file.path(REPO, "results"), "/")
+path <- "F:/gas_drift_project/main_results/"
+if (!dir.exists(path)) path <- "results/"  # portable fallback for a fresh clone
 
 # ============================================================
 # 1.   
@@ -31,7 +12,7 @@ path <- paste0(file.path(REPO, "results"), "/")
 budget_use <- 0.10
 seed_use <- 42
 fold_use <- 5
-pair_use <- "4-6"
+pair_use <- "1-2"
 method_use <- "cg_sup"
 rho_use <- 0.50
 
@@ -62,9 +43,9 @@ theme_pub <- theme_bw(base_size = 11) +
 # 2.     
 # ============================================================
 
-a <- read.csv(paste0(path, "panel_44a_oscr_cosine.csv.gz"))
+a <- read.csv(paste0(path, "panel_44a_oscr_cosine.csv"))
 b <- read.csv(paste0(path, "panel_44b_contamination_cosine.csv"))
-s <- read.csv(paste0(path, "panel_44_sample_scores_cosine.csv.gz"))
+s <- read.csv(paste0(path, "panel_44_sample_scores_cosine.csv"))
 t <- read.csv(paste0(path, "panel_44_thresholds_cosine.csv"))
 
 s <- s %>%
@@ -391,12 +372,13 @@ p_oscr_base <- ggplot(
     )
   ) +
   labs(
-    x = "Unknown acceptance rate",
-    y = "Known correct acceptance rate",
+    x = "Unknown FPR",
+    y = "Known CCR",
     caption = paste0(
       "Curves: run means; shading: +/-1 between-run SD.\n",
       "Diamonds: mean working points from run-specific known-reference Q90.\n",
-      "Mean working points need not lie on the mean curves."
+      "Mean working points need not lie on the mean curves. ",
+      "FPR: unknown false-positive rate; CCR: known correct-acceptance rate."
     )
   ) +
   theme_pub
@@ -542,8 +524,8 @@ p_contam <- ggplot(
     )
   ) +
   labs(
-    x = "Unknown fraction in reference pool",
-    y = "Proportion",
+    x = "Contamination rho",
+    y = "Rate",
     caption = paste(
       "Points: run means.",
       "Error bars: +/-1 between-run SD."
@@ -732,12 +714,12 @@ p_dist <- ggplot(
   ) +
   labs(
     x = if (use_log) {
-      "log10(Distance score)"
+      "log10(d)"
     } else {
-      "Distance score"
+      "Distance d"
     },
     
-    y = "Cumulative proportion",
+    y = "CDF",
     
     subtitle = sprintf(
       paste0(
@@ -776,7 +758,13 @@ theme_clean <- theme_classic(base_size=11)+theme(
  legend.title=element_blank(),legend.position='bottom',
  legend.text=element_text(size=14, face = 'bold'),
  plot.margin=margin(8,12,8,8))
-settings <- c('1-2','3-5','4-6')
+n_unknown_for <- function(up){
+ z<-s[s$unknown_pair==up,]
+ if(!nrow(z)) return(0L)
+ zz<-z[z$seed==z$seed[1]&z$fold==z$fold[1]&z$method==z$method[1],]
+ as.integer(sum(zz$is_unknown))
+}
+settings <- c('2-3','1-2','3-5')
 
 # OSCR: each setting has its own axes; colored in-panel method/AUC labels.
 oscr_panel <- function(up,zoom=FALSE){
@@ -796,12 +784,12 @@ oscr_panel <- function(up,zoom=FALSE){
  scale_x_continuous(breaks=if(zoom)seq(0,.1,.025) else seq(0,1,.25))+
  scale_y_continuous(breaks=c(0,.5,1))+
  coord_cartesian(xlim=c(0,xmax),ylim=c(0,1.02))+
- labs(title=paste0('Unknown:',up),x='Unknown Acceptance Rate',y='Known Correct Acceptance Rate')+
+ labs(title=sprintf('Unknown: %s (n=%d)',up,n_unknown_for(up)),x='Unknown FPR',y='Known CCR')+
  theme_clean+theme(legend.position='none')
 }
 # oscr_note<-'Shading: +/-1 between-run SD. Diamonds: mean known-reference Q90 working points.\nAUC labels describe the full curve, including in the zoomed view; working points outside the zoom are not shown.'
 p_oscr<-wrap_plots(lapply(settings,oscr_panel),nrow=1)
-p_oscr_zoom<-wrap_plots(lapply(settings,function(up)oscr_panel(up,TRUE)),nrow=1)
+p_oscr_zoom<-wrap_plots(lapply(settings,function(up)oscr_panel(up,TRUE)),nrow=1)+plot_annotation(caption=oscr_note)
 
 # Contamination: six curves require a shared legend rather than in-panel text.
 contam_panel<-function(up,metric_name){
@@ -814,7 +802,7 @@ contam_panel<-function(up,metric_name){
  scale_shape_manual(values=c(full=16,tail=17),breaks=c('full','tail'),labels=c('Full pool','Low-distance subset'))+
  scale_x_continuous(breaks=sort(unique(b$rho)))+scale_y_continuous(breaks=c(0,.5,1))+
  coord_cartesian(ylim=c(0,1.02))+
- labs(title=paste0('Unknown:',up),x='Unknown Fraction in Reference Pool',y=if(metric_name=='known_correct_acceptance')'Known Correct Acceptance' else 'Unknown Rejection')+
+ labs(title=sprintf('Unknown: %s (n=%d)',up,n_unknown_for(up)),x='Contamination rho',y=if(metric_name=='known_correct_acceptance')'CCR' else 'UR')+
  theme_clean
 }
 p_contam<-wrap_plots(c(
@@ -839,12 +827,12 @@ dist_panel<-function(strategy_name){
  geom_step(linewidth=1.0)+
  annotate('segment',x=q$threshold,xend=q$threshold,y=0,yend=1,linetype='dashed',colour='grey40',linewidth=1.0)+
  annotate('text',x=.98*xhi,y=1.06,label=sprintf('tau = %.3g',q$threshold),hjust=1,size=4)+
- geom_label(data=ann,aes(x=.78*xhi,y=yy,label=label,colour=group),inherit.aes=FALSE,hjust=1,size=3.5,fill='white',linewidth=0,label.padding=grid::unit(.1,'lines'))+
- annotate('text',x=.78*xhi,y=.28,label=sprintf('Known correct accept: %.1f%%',100*q$CCR),hjust=1,size=3.5,colour='grey30')+
+ geom_label(data=ann,aes(x=.95*xhi,y=yy,label=label,colour=group),inherit.aes=FALSE,hjust=1,size=3.5,fill='white',linewidth=0,label.padding=grid::unit(.1,'lines'))+
+ annotate('text',x=.95*xhi,y=.28,label=sprintf('Known correct accept: %.1f%%',100*q$CCR),hjust=1,size=3.5,colour='grey30')+
  scale_colour_manual(values=c(Known='#354F80',Unknown='#DE7548'))+
  scale_x_continuous(breaks=scales::breaks_pretty(n=4))+scale_y_continuous(breaks=c(0,.5,1))+
  coord_cartesian(xlim=c(0,xhi),ylim=c(0,1.12))+
- labs(title=strategy_name,x='Cosine Distance Sore',y='Cumulative Proportion')+
+ labs(title=strategy_name,x='Distance d',y='CDF')+
  theme_clean+theme(legend.position='none')
 }
 p_dist<-wrap_plots(lapply(c('Full pool','Low-distance subset'),dist_panel),nrow=1)+

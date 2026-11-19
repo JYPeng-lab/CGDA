@@ -1,0 +1,8 @@
+﻿,auroc,auroc,auroc,oscr,oscr,oscr,known_accuracy,known_accuracy,known_accuracy
+,mean,std,count,mean,std,count,mean,std,count
+method,,,,,,,,,
+base,0.7409,0.1774,750,0.6897,0.2023,750,0.8999,0.0908,750
+cal_sup,0.8206,0.1268,750,0.8146,0.1272,750,0.9865,0.0118,750
+cg_shuffle,0.6208,0.1977,750,0.5915,0.1857,750,0.9296,0.0406,750
+cg_sup,0.8135,0.1231,750,0.8091,0.1232,750,0.9883,0.0103,750
+mixup_std,0.6253,0.2301,750,0.573,0.2482,750,0.8766,0.1073,750
